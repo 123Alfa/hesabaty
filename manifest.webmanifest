@@ -1,13 +1,13 @@
 {
-  "name": "حساباتي",
+  "name": "حساباتي — إدارة حركة الأموال",
   "short_name": "حساباتي",
   "description": "إدارة الاستلام والتحويل وحركة الأموال",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f4f7f7",
-  "theme_color": "#0f766e",
+  "background_color": "#f2f7f6",
+  "theme_color": "#087f73",
   "lang": "ar",
   "dir": "rtl",
   "icons": [

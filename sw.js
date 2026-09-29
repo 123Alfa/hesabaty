@@ -1,4 +1,4 @@
-const CACHE='hesabaty-pwa-v1.1.0';
+const CACHE='hesabaty-pwa-v1.3.0';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',e=>{
