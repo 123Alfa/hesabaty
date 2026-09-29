@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+<title>حساباتي — إدارة حركة الأموال</title>
+<style>
+:root{--p:#0f766e;--p2:#115e59;--bg:#f4f7f7;--card:#fff;--txt:#17202a;--muted:#667085;--green:#15803d;--red:#dc2626;--line:#e5e7eb;--shadow:0 6px 24px #0000000d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--txt)}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{max-width:1100px;margin:auto;padding:14px}
+header{background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
+h1{font-size:23px;margin:0 0 5px}.sub{opacity:.9;font-size:13px}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:12px 0}.nav button{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 5px;color:var(--txt);transition:.15s}.nav button.active{background:var(--p);color:#fff}.nav button:active,.btn:active{transform:scale(.98)}
+.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow)}.label{font-size:12px;color:var(--muted)}.num{font-size:23px;font-weight:800;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}.teal{color:var(--p)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.form-card{margin-top:12px}.full{grid-column:1/-1}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d6dbe1;border-radius:10px;background:#fff;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px #0f766e18}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn{padding:11px 15px;border-radius:10px;background:#eef2f2;color:var(--txt)}.primary{background:var(--p);color:#fff}.danger{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}.warning{background:#fff7ed;color:#9a3412}
+.balance-box{background:#f8fffe;border:1px dashed #93c5c1;border-radius:14px;padding:12px;margin-top:12px}.balance-form{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.table-wrap{overflow:auto;margin-top:12px;border:1px solid var(--line);border-radius:14px;background:#fff}table{width:100%;border-collapse:collapse;min-width:720px;background:#fff}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;font-size:13px;white-space:nowrap;vertical-align:middle}th{background:#f8fafc;color:#475467}tr:last-child td{border-bottom:0}.actions-cell{white-space:nowrap}.note-cell{max-width:260px;white-space:normal;line-height:1.5}
+.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px}.in{background:#dcfce7;color:#166534}.out{background:#fee2e2;color:#991b1b}
+.toolbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;margin:12px 0}.section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:15px 0 8px}.section-title h2{font-size:17px;margin:0}.empty{text-align:center;padding:35px;color:var(--muted)}
+.person-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.person{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px}.person strong{display:block;margin-bottom:8px}.person .btn{width:100%}
+.small{font-size:11px;color:var(--muted)}.summary-line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.summary-line:last-child{border-bottom:0}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;padding:15px;z-index:10}.modal.show{display:flex}.modalbox{background:#fff;border-radius:18px;padding:18px;width:min(560px,100%);max-height:90vh;overflow:auto}.modal-title{margin:0}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:10px 15px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s;z-index:20;font-size:13px}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}.danger-text{color:var(--red);font-weight:700}
+@media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr}.toolbar .wide{grid-column:1/-1}.toolbar .clear-btn{grid-column:1/-1}}
+@media(max-width:700px){.app{padding:10px}.cards{grid-template-columns:1fr}.grid,.person-list{grid-template-columns:1fr}.nav{grid-template-columns:repeat(3,1fr)}.nav button{padding:9px 4px;font-size:12px}.balance-form{grid-template-columns:1fr}.section-title{align-items:flex-start;flex-wrap:wrap}.modalbox{padding:14px}.table-wrap{margin-left:-2px;margin-right:-2px}.num{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>💰 حساباتي</h1><div class="sub">إدارة الاستلام والتحويل بشكل واضح وبدون لخبطة</div></header>
+
+<div class="nav">
+<button class="active" data-page="home">الرئيسية</button>
+<button data-page="ops">العمليات</button>
+<button data-page="people">الأشخاص</button>
+<button data-page="reports">التقارير</button>
+<button data-page="backup">النسخ الاحتياطي</button>
+</div>
+
+<section id="home" class="page active">
+<div class="cards">
+<div class="card"><div class="label">🟢 إجمالي المستلم</div><div id="totalIn" class="num green">0 ج</div></div>
+<div class="card"><div class="label">🔴 إجمالي التحويلات</div><div id="totalOut" class="num red">0 ج</div></div>
+<div class="card"><div class="label">💼 رصيد البداية</div><div id="openingBalanceView" class="num">0 ج</div></div>
+<div class="card"><div class="label">💰 الرصيد الحالي</div><div id="balance" class="num teal">0 ج</div></div>
+</div>
+
+<div class="card balance-box">
+<div class="section-title"><h2>⚙️ رصيد البداية</h2></div>
+<div class="small">اكتب الرصيد الموجود لديك قبل العمليات المسجلة. الرصيد الحالي = رصيد البداية + المستلم − التحويلات.</div>
+<div class="balance-form" style="margin-top:10px">
+<div><label for="openingBalance">الرصيد عند بدء المتابعة</label><input id="openingBalance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
+<button class="btn primary" onclick="saveOpeningBalance()">💾 حفظ الرصيد</button>
+</div>
+</div>
+
+<div class="card form-card">
+<div class="section-title"><h2>➕ إضافة حركة سريعة</h2></div>
+<div class="grid">
+<div><label for="quickType">نوع الحركة</label><select id="quickType"><option value="in">🟢 استلام</option><option value="out">🔴 تحويل</option></select></div>
+<div><label for="quickPerson">اسم الشخص</label><input id="quickPerson" placeholder="مثال: أحمد"></div>
+<div><label for="quickAmount">المبلغ</label><input id="quickAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0"></div>
+<div><label for="quickMethod">طريقة الحركة</label><select id="quickMethod"><option>تحويل بنكي</option><option>محفظة</option><option>إنستا باي</option><option>كاش</option><option>أخرى</option></select></div>
+<div class="full"><label for="quickNote">ملاحظة</label><input id="quickNote" placeholder="اختياري"></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="addQuick()">💾 تسجيل الحركة</button></div>
+</div>
+<div class="section-title"><h2>آخر العمليات</h2><button class="btn" onclick="go('ops')">عرض الكل</button></div>
+<div id="recent"></div>
+</section>
+
+<section id="ops" class="page">
+<div class="card">
+<div class="section-title"><h2>📋 سجل العمليات</h2><button class="btn primary" onclick="openAdd()">+ عملية جديدة</button></div>
+<div class="toolbar">
+<input id="search" class="wide" placeholder="🔎 بحث بالاسم أو الملاحظة أو رقم العملية أو الطريقة" oninput="renderOps()">
+<select id="filterType" onchange="renderOps()"><option value="">كل الحركات</option><option value="in">استلام</option><option value="out">تحويل</option></select>
+<input id="filterFrom" type="date" aria-label="من تاريخ" onchange="renderOps()">
+<input id="filterTo" type="date" aria-label="إلى تاريخ" onchange="renderOps()">
+<button class="btn clear-btn" onclick="clearFilters()">↻ مسح الفلاتر</button>
+</div>
+<div id="opsTable"></div>
+</div>
+</section>
+
+<section id="people" class="page">
+<div class="card">
+<div class="section-title"><h2>👤 حسابات الأشخاص</h2></div>
+<input id="peopleSearch" placeholder="🔎 ابحث عن شخص" oninput="renderPeople()">
+<div id="peopleList" class="person-list" style="margin-top:12px"></div>
+</div>
+</section>
+
+<section id="reports" class="page">
+<div class="cards">
+<div class="card"><div class="label">عدد العمليات</div><div id="countOps" class="num">0</div></div>
+<div class="card"><div class="label">متوسط الحركة</div><div id="avgOps" class="num">0 ج</div></div>
+<div class="card"><div class="label">أكبر حركة</div><div id="maxOps" class="num">0 ج</div></div>
+<div class="card"><div class="label">الرصيد الحالي</div><div id="reportBalance" class="num teal">0 ج</div></div>
+</div>
+<div class="card form-card">
+<div class="section-title"><h2>📊 ملخص الفترة</h2></div>
+<div class="grid">
+<div><label for="repFrom">من</label><input id="repFrom" type="date" onchange="renderReports()"></div>
+<div><label for="repTo">إلى</label><input id="repTo" type="date" onchange="renderReports()"></div>
+</div>
+<div id="reportBody" style="margin-top:12px"></div>
+</div>
+</section>
+
+<section id="backup" class="page">
+<div class="card">
+<div class="section-title"><h2>💾 النسخ الاحتياطي</h2></div>
+<p class="small">بياناتك محفوظة محليًا على الجهاز. صدّر نسخة احتياطية دورية واحتفظ بها في مكان آمن.</p>
+<div class="actions">
+<button class="btn primary" onclick="exportData()">⬇️ تصدير نسخة احتياطية</button>
+<button class="btn success" onclick="document.getElementById('importFile').click()">⬆️ استرجاع نسخة</button>
+<button class="btn danger" onclick="clearAll()">🗑️ مسح كل البيانات</button>
+<input id="importFile" type="file" accept=".json,application/json" hidden onchange="importData(event)">
+</div>
+<div id="backupInfo" style="margin-top:15px"></div>
+</div>
+</section>
+
+<footer>حساباتي — نسخة محلية تعمل بدون إنترنت</footer>
+</div>
+
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div class="modalbox">
+<div class="section-title"><h2 id="modalTitle" class="modal-title">عملية جديدة</h2><button class="btn" onclick="closeModal()">✕</button></div>
+<div class="grid">
+<div><label for="mType">نوع الحركة</label><select id="mType"><option value="in">🟢 استلام</option><option value="out">🔴 تحويل</option></select></div>
+<div><label for="mPerson">اسم الشخص *</label><input id="mPerson"></div>
+<div><label for="mAmount">المبلغ *</label><input id="mAmount" type="number" min="0.01" step="0.01" inputmode="decimal"></div>
+<div><label for="mMethod">طريقة الحركة</label><select id="mMethod"><option>تحويل بنكي</option><option>محفظة</option><option>إنستا باي</option><option>كاش</option><option>أخرى</option></select></div>
+<div><label for="mDate">التاريخ</label><input id="mDate" type="date"></div>
+<div><label for="mRef">رقم العملية الخارجي</label><input id="mRef" placeholder="اختياري"></div>
+<div class="full"><label for="mNote">ملاحظة</label><textarea id="mNote" rows="2"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="saveModal()">حفظ العملية</button><button class="btn" onclick="closeModal()">إلغاء</button></div>
+</div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+const KEY='hesabaty_v1';
+const $=id=>document.getElementById(id);
+let data=loadData();
+let editId=null;
+
+function round2(n){return Math.round((Number(n)||0)*100)/100}
+function money(n){return round2(n).toLocaleString('ar-EG',{minimumFractionDigits:0,maximumFractionDigits:2})+' ج'}
+function today(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function nowISO(){return new Date().toISOString()}
+function normText(s){return String(s??'').trim()}
+function parseAmount(v){const n=Number(v);return Number.isFinite(n)&&n>0?round2(n):0}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function emptyData(){return {version:1,seq:0,openingBalance:0,ops:[]}}
+function normalizeOp(o, fallbackId){
+ const type=o?.type==='out'?'out':'in';
+ const amount=parseAmount(o?.amount);
+ return {
+   id:normText(o?.id)||fallbackId,
+   type,
+   person:normText(o?.person),
+   amount,
+   method:normText(o?.method)||'أخرى',
+   date:/^\d{4}-\d{2}-\d{2}$/.test(o?.date)?o.date:today(),
+   ref:normText(o?.ref),
+   note:normText(o?.note),
+   createdAt:o?.createdAt||nowISO(),
+   updatedAt:o?.updatedAt||o?.createdAt||nowISO()
+ }
+}
+function loadData(){
+ try{
+   const raw=localStorage.getItem(KEY);
+   if(!raw)return emptyData();
+   const x=JSON.parse(raw);
+   if(!x||!Array.isArray(x.ops))return emptyData();
+   const out=emptyData();
+   out.version=Number(x.version)||1;
+   out.openingBalance=Number.isFinite(Number(x.openingBalance))?round2(Math.max(0,Number(x.openingBalance))):0;
+   out.ops=x.ops.map((o,i)=>normalizeOp(o,'OP-'+String(i+1).padStart(6,'0'))).filter(o=>o.person&&o.amount>0);
+   const maxSeq=out.ops.reduce((m,o)=>Math.max(m,Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0),0);
+   out.seq=Math.max(Number(x.seq)||0,maxSeq);
+   return out;
+ }catch(e){return emptyData()}
+}
+function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
+function save(){persist();renderAll()}
+function nextId(){
+ const current=Math.max(Number(data.seq)||0,...data.ops.map(o=>Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0));
+ data.seq=current+1;
+ return 'OP-'+String(data.seq).padStart(6,'0')
+}
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+
+function totals(list=data.ops){
+ const ins=round2(list.filter(o=>o.type==='in').reduce((s,o)=>s+o.amount,0));
+ const outs=round2(list.filter(o=>o.type==='out').reduce((s,o)=>s+o.amount,0));
+ return {ins,outs,balance:round2(data.openingBalance+ins-outs)}
+}
+function addQuick(){
+ const type=$('quickType').value, person=normText($('quickPerson').value), amount=parseAmount($('quickAmount').value);
+ if(!person||!amount)return alert('اكتب اسم الشخص والمبلغ بشكل صحيح');
+ data.ops.push({id:nextId(),type,person,amount,method:$('quickMethod').value,date:today(),ref:'',note:normText($('quickNote').value),createdAt:nowISO(),updatedAt:nowISO()});
+ $('quickPerson').value='';$('quickAmount').value='';$('quickNote').value='';
+ save();toast('تم تسجيل الحركة بنجاح ✅');
+}
+function saveOpeningBalance(){
+ const n=Number($('openingBalance').value);
+ if(!Number.isFinite(n)||n<0)return alert('اكتب رصيدًا صحيحًا لا يقل عن صفر');
+ data.openingBalance=round2(n);save();toast('تم حفظ رصيد البداية ✅');
+}
+function openAdd(){
+ editId=null;$('modalTitle').textContent='عملية جديدة';$('mType').value='in';$('mPerson').value='';$('mAmount').value='';$('mMethod').value='تحويل بنكي';$('mDate').value=today();$('mRef').value='';$('mNote').value='';$('modal').classList.add('show');setTimeout(()=>$('mPerson').focus(),50)
+}
+function editOp(id){
+ const o=data.ops.find(x=>x.id===id);if(!o)return;
+ editId=id;$('modalTitle').textContent='تعديل العملية';$('mType').value=o.type;$('mPerson').value=o.person;$('mAmount').value=o.amount;$('mMethod').value=o.method;$('mDate').value=o.date;$('mRef').value=o.ref||'';$('mNote').value=o.note||'';$('modal').classList.add('show')
+}
+function saveModal(){
+ const person=normText($('mPerson').value),amount=parseAmount($('mAmount').value),date=$('mDate').value;
+ if(!person||!amount||!date)return alert('راجع الاسم والمبلغ والتاريخ');
+ const obj={type:$('mType').value==='out'?'out':'in',person,amount,method:$('mMethod').value,date,ref:normText($('mRef').value),note:normText($('mNote').value),updatedAt:nowISO()};
+ if(editId){const i=data.ops.findIndex(x=>x.id===editId);if(i===-1)return closeModal();data.ops[i]={...data.ops[i],...obj}}else data.ops.push({id:nextId(),...obj,createdAt:nowISO()});
+ closeModal();save();toast(editId?'تم تعديل العملية ✅':'تم حفظ العملية ✅');editId=null;
+}
+function closeModal(){$('modal').classList.remove('show')}
+function delOp(id){if(!confirm('هل أنت متأكد من حذف هذه العملية؟ لا يمكن التراجع.'))return;data.ops=data.ops.filter(x=>x.id!==id);save();toast('تم حذف العملية')}
+function clearFilters(){$('search').value='';$('filterType').value='';$('filterFrom').value='';$('filterTo').value='';renderOps()}
+function filtered(list=data.ops){
+ const q=normText($('search').value).toLowerCase(),t=$('filterType').value,f=$('filterFrom').value,to=$('filterTo').value;
+ return list.filter(o=>{const hay=[o.id,o.person,o.note,o.ref,o.method,o.date].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!t||o.type===t)&&(!f||o.date>=f)&&(!to||o.date<=to)})
+}
+function formatDate(date){if(!date)return'—';const [y,m,d]=String(date).split('-');return y&&m&&d?`${d}/${m}/${y}`:date}
+function renderOps(){
+ const a=[...filtered()].sort((x,y)=>(y.date+y.id).localeCompare(x.date+x.id));
+ if(!a.length){$('opsTable').innerHTML='<div class="empty">لا توجد عمليات مطابقة.</div>';return}
+ $('opsTable').innerHTML='<div class="table-wrap"><table><thead><tr><th>الرقم</th><th>التاريخ</th><th>الشخص</th><th>الحركة</th><th>المبلغ</th><th>الطريقة</th><th>رقم خارجي</th><th>إجراءات</th></tr></thead><tbody>'+a.map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(formatDate(o.date))}</td><td><b>${esc(o.person)}</b>${o.note?`<br><span class="small note-cell">${esc(o.note)}</span>`:''}</td><td><span class="pill ${o.type==='in'?'in':'out'}">${o.type==='in'?'استلام':'تحويل'}</span></td><td class="${o.type==='in'?'green':'red'}"><b>${money(o.amount)}</b></td><td>${esc(o.method)}</td><td>${esc(o.ref||'—')}</td><td class="actions-cell"><button class="btn" data-edit="${esc(o.id)}">✏️</button> <button class="btn danger" data-delete="${esc(o.id)}">🗑️</button></td></tr>`).join('')+'</tbody></table></div>';
+}
+function renderHome(){
+ const t=totals();$('totalIn').textContent=money(t.ins);$('totalOut').textContent=money(t.outs);$('openingBalanceView').textContent=money(data.openingBalance);$('balance').textContent=money(t.balance);$('openingBalance').value=String(data.openingBalance);
+ $('balance').classList.remove('green','red','teal');$('balance').classList.add(t.balance>=0?'teal':'red');
+ const a=[...data.ops].sort((x,y)=>(y.date+y.id).localeCompare(x.date+x.id)).slice(0,7);
+ $('recent').innerHTML=a.length?'<div class="table-wrap"><table style="min-width:560px"><thead><tr><th>التاريخ</th><th>الشخص</th><th>الحركة</th><th>المبلغ</th><th>الطريقة</th></tr></thead><tbody>'+a.map(o=>`<tr><td>${esc(formatDate(o.date))}</td><td>${esc(o.person)}</td><td>${o.type==='in'?'🟢 استلام':'🔴 تحويل'}</td><td class="${o.type==='in'?'green':'red'}"><b>${money(o.amount)}</b></td><td>${esc(o.method)}</td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">لسه مفيش عمليات.</div>';
+}
+function renderPeople(){
+ const q=normText($('peopleSearch').value).toLowerCase(),map={};
+ data.ops.forEach(o=>{const k=o.person.trim();if(!map[k])map[k]={in:0,out:0,count:0};map[k][o.type]=round2(map[k][o.type]+o.amount);map[k].count++});
+ const rows=Object.entries(map).filter(([n])=>n.toLowerCase().includes(q)).sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+ $('peopleList').innerHTML=rows.length?rows.map(([n,v])=>`<div class="person"><strong>👤 ${esc(n)}</strong><div class="summary-line"><span>إجمالي الاستلام</span><span class="green">${money(v.in)}</span></div><div class="summary-line"><span>إجمالي التحويل</span><span class="red">${money(v.out)}</span></div><div class="summary-line"><b>الصافي</b><b class="${v.in-v.out>=0?'green':'red'}">${money(v.in-v.out)}</b></div><div class="small" style="margin-top:7px">${v.count} عملية</div><button class="btn" style="margin-top:8px" data-person="${esc(n)}">عرض كشف الحساب</button></div>`).join(''):'<div class="empty">لا يوجد أشخاص.</div>';
+}
+function personOps(n){go('ops');$('search').value=n;$('filterType').value='';$('filterFrom').value='';$('filterTo').value='';renderOps()}
+function rangeOps(){const f=$('repFrom').value,t=$('repTo').value;return data.ops.filter(o=>(!f||o.date>=f)&&(!t||o.date<=t))}
+function renderReports(){
+ const a=rangeOps(),ins=round2(a.filter(o=>o.type==='in').reduce((s,o)=>s+o.amount,0)),outs=round2(a.filter(o=>o.type==='out').reduce((s,o)=>s+o.amount,0)),total=round2(ins+outs),all=totals();
+ $('countOps').textContent=a.length;$('avgOps').textContent=money(a.length?total/a.length:0);$('maxOps').textContent=money(a.length?Math.max(...a.map(o=>o.amount)):0);$('reportBalance').textContent=money(all.balance);
+ const methods={};a.forEach(o=>methods[o.method]=round2((methods[o.method]||0)+o.amount));
+ $('reportBody').innerHTML=`<div class="summary-line"><b>إجمالي المستلم</b><b class="green">${money(ins)}</b></div><div class="summary-line"><b>إجمالي التحويل</b><b class="red">${money(outs)}</b></div><div class="summary-line"><b>صافي الفترة</b><b class="${ins-outs>=0?'green':'red'}">${money(ins-outs)}</b></div><div class="summary-line"><b>الرصيد الحالي</b><b class="${all.balance>=0?'teal':'red'}">${money(all.balance)}</b></div><h3>حسب طريقة الحركة</h3>`+(Object.entries(methods).length?Object.entries(methods).sort((a,b)=>b[1]-a[1]).map(x=>`<div class="summary-line"><span>${esc(x[0])}</span><span>${money(x[1])}</span></div>`).join(''):'<div class="small">لا توجد بيانات في الفترة.</div>');
+}
+function exportData(){
+ const payload={...data,exportedAt:nowISO()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='حساباتي-نسخة-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('تم تصدير النسخة الاحتياطية ✅')
+}
+function importData(e){
+ const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{
+   const x=JSON.parse(r.result);if(!x||!Array.isArray(x.ops))throw new Error('invalid');
+   const imported=emptyData();imported.openingBalance=Number.isFinite(Number(x.openingBalance))?round2(Math.max(0,Number(x.openingBalance))):0;
+   imported.ops=x.ops.map((o,i)=>normalizeOp(o,'OP-'+String(i+1).padStart(6,'0'))).filter(o=>o.person&&o.amount>0);
+   const maxSeq=imported.ops.reduce((m,o)=>Math.max(m,Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0),0);imported.seq=Math.max(Number(x.seq)||0,maxSeq);
+   if(!confirm('استرجاع النسخة سيستبدل البيانات الحالية. هل أنت متأكد؟'))return;
+   data=imported;save();toast('تم الاسترجاع بنجاح ✅');
+ }catch{alert('الملف غير صالح أو بياناته ناقصة')}};r.readAsText(file);e.target.value=''
+}
+function clearAll(){if(confirm('تحذير: سيتم حذف كل العمليات ورصيد البداية نهائيًا من هذا الجهاز. هل أنت متأكد؟')){data=emptyData();save();toast('تم مسح البيانات بالكامل')}}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const page=$(p);if(!page)return;page.classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+function renderAll(){renderHome();renderOps();renderPeople();renderReports();renderBackupInfo()}
+function renderBackupInfo(){
+ const times=data.ops.map(o=>new Date(o.updatedAt||o.createdAt).getTime()).filter(Number.isFinite),last=times.length?new Date(Math.max(...times)).toLocaleString('ar-EG'):'—';
+ $('backupInfo').innerHTML=`<div class="summary-line"><span>عدد العمليات المحفوظة</span><b>${data.ops.length}</b></div><div class="summary-line"><span>رصيد البداية</span><b>${money(data.openingBalance)}</b></div><div class="summary-line"><span>الرصيد الحالي</span><b class="${totals().balance>=0?'teal':'red'}">${money(totals().balance)}</b></div><div class="summary-line"><span>آخر تحديث</span><b>${esc(last)}</b></div>`
+}
+
+// Events
+$('opsTable').addEventListener('click',e=>{
+ const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
+ if(edit)editOp(edit.dataset.edit);if(del)delOp(del.dataset.delete)
+});
+$('peopleList').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b)personOps(b.dataset.person)});
+$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.contains('show'))closeModal()});
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+
+// Initialize filters and data safely.
+$('repFrom').value='';$('repTo').value='';
+renderAll();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body></html>
