@@ -13,7 +13,7 @@
 button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{max-width:1100px;margin:auto;padding:14px}
 header{background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
 h1{font-size:23px;margin:0 0 5px}.sub{opacity:.9;font-size:13px}
-.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:12px 0}.nav button{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 5px;color:var(--txt);transition:.15s}.nav button.active{background:var(--p);color:#fff}.nav button:active,.btn:active{transform:scale(.98)}
+.nav{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:12px 0}.nav button{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 5px;color:var(--txt);transition:.15s}.nav button.active{background:var(--p);color:#fff}.nav button:active,.btn:active{transform:scale(.98)}
 .page{display:none}.page.active{display:block}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow)}.label{font-size:12px;color:var(--muted)}.num{font-size:23px;font-weight:800;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}.teal{color:var(--p)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.form-card{margin-top:12px}.full{grid-column:1/-1}
@@ -103,7 +103,7 @@ footer{padding-bottom:28px}
   .app{padding:8px}
   header{border-radius:16px;padding:17px 15px}
   header h1{font-size:22px}
-  .nav{position:sticky;top:6px;z-index:8;grid-template-columns:repeat(5,1fr);gap:3px;padding:4px}
+  .nav{position:sticky;top:6px;z-index:8;grid-template-columns:repeat(3,1fr);gap:3px;padding:4px}
   .nav button{padding:9px 2px;font-size:10.5px;border-radius:10px}
   .cards .card{padding:13px}
   .section-title h2{font-size:16px}
@@ -123,6 +123,7 @@ footer{padding-bottom:28px}
 <button class="active" data-page="home">الرئيسية</button>
 <button data-page="ops">العمليات</button>
 <button data-page="people">الأشخاص</button>
+<button data-page="mutual">الحساب المتبادل</button>
 <button data-page="reports">التقارير</button>
 <button data-page="backup">النسخ الاحتياطي</button>
 </div>
@@ -188,6 +189,40 @@ footer{padding-bottom:28px}
 <input id="peopleSearch" placeholder="🔎 ابحث عن شخص" oninput="renderPeople()">
 <div id="peopleList" class="person-list" style="margin-top:12px"></div>
 </div>
+</section>
+
+
+<section id="mutual" class="page">
+ <div class="cards">
+  <div class="card"><div class="label">🟢 إجمالي اللي حولته له</div><div id="mutSent" class="num green">0 ج</div></div>
+  <div class="card"><div class="label">🔵 إجمالي اللي استلمته منه</div><div id="mutReceived" class="num teal">0 ج</div></div>
+  <div class="card"><div class="label">👥 عدد الأشخاص</div><div id="mutPeopleCount" class="num">0</div></div>
+  <div class="card"><div class="label">⚖️ صافي الحسابات</div><div id="mutNet" class="num">0 ج</div></div>
+ </div>
+ <div class="card form-card">
+  <div class="section-title"><h2 id="mutFormTitle">➕ تسجيل حركة في الحساب المتبادل</h2><span class="small">مستقل عن العمليات الرئيسية</span></div>
+  <div class="grid">
+   <div><label for="mutPerson">اسم الشخص *</label><input id="mutPerson" placeholder="مثال: أحمد" autocomplete="off"></div>
+   <div><label for="mutType">نوع الحركة *</label><select id="mutType"><option value="sent">أنا حولت له / دفعته له</option><option value="received">هو حول لي / دفعه لي</option></select></div>
+   <div><label for="mutAmount">المبلغ بالجنيه *</label><input id="mutAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0"></div>
+   <div><label for="mutDate">التاريخ *</label><input id="mutDate" type="date"></div>
+   <div><label for="mutMethod">طريقة الحركة</label><select id="mutMethod"><option>كاش</option><option>محفظة</option><option>إنستا باي</option><option>تحويل بنكي</option><option>أخرى</option></select></div>
+   <div><label for="mutRef">رقم العملية (اختياري)</label><input id="mutRef" placeholder="رقم مرجعي"></div>
+   <div class="full"><label for="mutNote">البيان / الملاحظات</label><textarea id="mutNote" rows="2" placeholder="سبب التحويل أو أي تفاصيل"></textarea></div>
+  </div>
+  <div class="actions"><button id="mutSaveBtn" class="btn primary" onclick="saveMutualOp()">💾 حفظ الحركة</button><button class="btn" onclick="resetMutualForm()">تفريغ الحقول</button><button class="btn success" onclick="exportMutualData()">⬇️ تصدير الحساب الشخصي</button><button class="btn" onclick="document.getElementById('mutImportFile').click()">⬆️ استرجاع نسخة</button><input id="mutImportFile" type="file" accept=".json,application/json" hidden onchange="importMutualData(event)"></div>
+  <div class="small" style="margin-top:8px">الحساب يُحسب كالتالي: لو حولت له أكثر مما استلمت منه، يبقى لك عنده الفرق. ولو استلمت منه أكثر، يبقى له عندك الفرق.</div>
+ </div>
+ <div class="card form-card">
+  <div class="section-title"><h2>👤 ملخص كل شخص</h2></div>
+  <input id="mutSearch" placeholder="🔎 ابحث باسم الشخص" oninput="renderMutual()">
+  <div id="mutPeopleSummary" class="person-list" style="margin-top:12px"></div>
+ </div>
+ <div class="card form-card">
+  <div class="section-title"><h2>📋 سجل الحركات الشخصية</h2></div>
+  <div class="grid"><div><label for="mutFilterPerson">الشخص</label><select id="mutFilterPerson" onchange="renderMutual()"><option value="">كل الأشخاص</option></select></div><div><label for="mutFilterType">نوع الحركة</label><select id="mutFilterType" onchange="renderMutual()"><option value="">كل الحركات</option><option value="sent">أنا حولت له</option><option value="received">هو حول لي</option></select></div></div>
+  <div id="mutOpsTable"></div>
+ </div>
 </section>
 
 <section id="reports" class="page">
@@ -375,11 +410,29 @@ function importData(e){
 }
 function clearAll(){if(confirm('تحذير: سيتم حذف كل العمليات ورصيد البداية نهائيًا من هذا الجهاز. هل أنت متأكد؟')){data=emptyData();save();toast('تم مسح البيانات بالكامل')}}
 function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const page=$(p);if(!page)return;page.classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
-function renderAll(){renderHome();renderOps();renderPeople();renderReports();renderBackupInfo()}
+function renderAll(){renderHome();renderOps();renderPeople();renderMutual();renderReports();renderBackupInfo()}
 function renderBackupInfo(){
  const times=data.ops.map(o=>new Date(o.updatedAt||o.createdAt).getTime()).filter(Number.isFinite),last=times.length?new Date(Math.max(...times)).toLocaleString('ar-EG'):'—';
  $('backupInfo').innerHTML=`<div class="summary-line"><span>عدد العمليات المحفوظة</span><b>${data.ops.length}</b></div><div class="summary-line"><span>رصيد البداية</span><b>${money(data.openingBalance)}</b></div><div class="summary-line"><span>الرصيد الحالي</span><b class="${totals().balance>=0?'teal':'red'}">${money(totals().balance)}</b></div><div class="summary-line"><span>آخر تحديث</span><b>${esc(last)}</b></div>`
 }
+
+
+// الحساب المتبادل: مخزن مستقل تمامًا عن سجل العمليات الرئيسي.
+const MUTUAL_KEY='hesabaty_mutual_accounts_v1';
+let mutualData=loadMutualData();
+let mutualEditId=null;
+function emptyMutualData(){return {version:1,seq:0,ops:[]}}
+function loadMutualData(){try{const x=JSON.parse(localStorage.getItem(MUTUAL_KEY)||'null');if(!x||!Array.isArray(x.ops))return emptyMutualData();const d=emptyMutualData();d.seq=Number(x.seq)||0;d.ops=x.ops.map((o,i)=>({id:normText(o.id)||'MUT-'+String(i+1).padStart(6,'0'),person:normText(o.person),type:o.type==='received'?'received':'sent',amount:parseAmount(o.amount),date:/^\d{4}-\d{2}-\d{2}$/.test(o.date)?o.date:today(),method:normText(o.method)||'أخرى',ref:normText(o.ref),note:normText(o.note),createdAt:o.createdAt||nowISO(),updatedAt:o.updatedAt||o.createdAt||nowISO()})).filter(o=>o.person&&o.amount>0);return d}catch(e){return emptyMutualData()}}
+function saveMutualData(){localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual()}
+function nextMutualId(){const n=Math.max(mutualData.seq,...mutualData.ops.map(o=>Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0))+1;mutualData.seq=n;return 'MUT-'+String(n).padStart(6,'0')}
+function resetMutualForm(){mutualEditId=null;$('mutFormTitle').textContent='➕ تسجيل حركة في الحساب المتبادل';$('mutSaveBtn').textContent='💾 حفظ الحركة';$('mutPerson').value='';$('mutType').value='sent';$('mutAmount').value='';$('mutDate').value=today();$('mutMethod').value='كاش';$('mutRef').value='';$('mutNote').value=''}
+function saveMutualOp(){const person=normText($('mutPerson').value),amount=parseAmount($('mutAmount').value),date=$('mutDate').value;if(!person||!amount||!date)return alert('اكتب اسم الشخص والمبلغ والتاريخ بشكل صحيح');const obj={person,type:$('mutType').value==='received'?'received':'sent',amount,date,method:$('mutMethod').value,ref:normText($('mutRef').value),note:normText($('mutNote').value),updatedAt:nowISO()};if(mutualEditId){const i=mutualData.ops.findIndex(o=>o.id===mutualEditId);if(i<0){resetMutualForm();return}mutualData.ops[i]={...mutualData.ops[i],...obj}}else mutualData.ops.push({id:nextMutualId(),...obj,createdAt:nowISO()});saveMutualData();resetMutualForm();toast('تم حفظ الحركة الشخصية ✅')}
+function editMutualOp(id){const o=mutualData.ops.find(x=>x.id===id);if(!o)return;mutualEditId=id;$('mutFormTitle').textContent='✏️ تعديل حركة شخصية';$('mutSaveBtn').textContent='💾 حفظ التعديل';$('mutPerson').value=o.person;$('mutType').value=o.type;$('mutAmount').value=o.amount;$('mutDate').value=o.date;$('mutMethod').value=o.method;$('mutRef').value=o.ref;$('mutNote').value=o.note;document.getElementById('mutual').scrollIntoView({behavior:'smooth',block:'start'})}
+function deleteMutualOp(id){if(!confirm('حذف هذه الحركة من الحساب الشخصي؟'))return;mutualData.ops=mutualData.ops.filter(o=>o.id!==id);saveMutualData();toast('تم حذف الحركة الشخصية')}
+function mutualNet(ops){return round2(ops.filter(o=>o.type==='sent').reduce((s,o)=>s+o.amount,0)-ops.filter(o=>o.type==='received').reduce((s,o)=>s+o.amount,0))}
+function renderMutual(){if(!$('mutOpsTable'))return;const ops=mutualData.ops;const sent=round2(ops.filter(o=>o.type==='sent').reduce((s,o)=>s+o.amount,0)),received=round2(ops.filter(o=>o.type==='received').reduce((s,o)=>s+o.amount,0));const people=[...new Set(ops.map(o=>o.person))].sort((a,b)=>a.localeCompare(b,'ar'));$('mutSent').textContent=money(sent);$('mutReceived').textContent=money(received);$('mutPeopleCount').textContent=people.length;const net=round2(sent-received);$('mutNet').textContent=net===0?'متساوي':money(Math.abs(net))+(net>0?' لك عندهم':net<0?' لهم عندك':'');$('mutNet').className='num '+(net>=0?'green':'red');const old=$('mutFilterPerson').value;$('mutFilterPerson').innerHTML='<option value="">كل الأشخاص</option>'+people.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');if(people.includes(old))$('mutFilterPerson').value=old;const q=normText($('mutSearch').value).toLowerCase();const summary=people.filter(n=>n.toLowerCase().includes(q)).map(n=>{const a=ops.filter(o=>o.person===n),s=round2(a.filter(o=>o.type==='sent').reduce((t,o)=>t+o.amount,0)),r=round2(a.filter(o=>o.type==='received').reduce((t,o)=>t+o.amount,0)),d=round2(s-r);return `<div class="person"><strong>👤 ${esc(n)}</strong><div class="summary-line"><span>أنا حولت له</span><b class="green">${money(s)}</b></div><div class="summary-line"><span>هو حول لي</span><b class="teal">${money(r)}</b></div><div class="summary-line"><b>صافي الحساب</b><b class="${d>=0?'green':'red'}">${d===0?'متساوي':money(Math.abs(d))+(d>0?' لي عنده':' له عندي')}</b></div><div class="small">${a.length} حركة</div><button class="btn" style="margin-top:8px" onclick="document.getElementById('mutFilterPerson').value=${JSON.stringify(n)};renderMutual()">عرض الحركات</button></div>`}).join('');$('mutPeopleSummary').innerHTML=summary||'<div class="empty">لا توجد حسابات شخصية مسجلة بعد.</div>';const fPerson=$('mutFilterPerson').value,fType=$('mutFilterType').value;const list=[...ops].filter(o=>(!fPerson||o.person===fPerson)&&(!fType||o.type===fType)).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));$('mutOpsTable').innerHTML=list.length?'<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الشخص</th><th>الحركة</th><th>المبلغ</th><th>الطريقة</th><th>البيان</th><th>إجراءات</th></tr></thead><tbody>'+list.map(o=>`<tr><td>${esc(formatDate(o.date))}</td><td><b>${esc(o.person)}</b></td><td><span class="pill ${o.type==='sent'?'in':'out'}">${o.type==='sent'?'أنا حولت له':'هو حول لي'}</span></td><td><b>${money(o.amount)}</b></td><td>${esc(o.method)}</td><td class="note-cell">${esc(o.note||'—')}${o.ref?'<br><span class="small">رقم: '+esc(o.ref)+'</span>':''}</td><td class="actions-cell"><button class="btn" onclick="editMutualOp('${esc(o.id)}')">✏️</button> <button class="btn danger" onclick="deleteMutualOp('${esc(o.id)}')">🗑️</button></td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">لا توجد حركات مطابقة.</div>'}
+function exportMutualData(){const payload={...mutualData,exportedAt:nowISO(),type:'hesabaty-mutual-independent'};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='حساباتي-الحساب-المتبادل-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('تم تصدير الحساب المتبادل ✅')}
+function importMutualData(e){const file=e.target.files&&e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||!Array.isArray(x.ops))throw new Error('invalid');const imported=emptyMutualData();imported.seq=Number(x.seq)||0;imported.ops=x.ops.map((o,i)=>({id:normText(o.id)||'MUT-'+String(i+1).padStart(6,'0'),person:normText(o.person),type:o.type==='received'?'received':'sent',amount:parseAmount(o.amount),date:/^\d{4}-\d{2}-\d{2}$/.test(o.date)?o.date:today(),method:normText(o.method)||'أخرى',ref:normText(o.ref),note:normText(o.note),createdAt:o.createdAt||nowISO(),updatedAt:o.updatedAt||o.createdAt||nowISO()})).filter(o=>o.person&&o.amount>0);if(!confirm('استرجاع النسخة سيستبدل بيانات الحساب المتبادل الحالية فقط. هل أنت متأكد؟'))return;mutualData=imported;saveMutualData();resetMutualForm();toast('تم استرجاع الحساب الشخصي بنجاح ✅')}catch(err){alert('ملف النسخة غير صالح أو لا يحتوي على حركات حساب متبادل')}};r.readAsText(file);e.target.value=''}
 
 // Events
 $('opsTable').addEventListener('click',e=>{
@@ -394,6 +447,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 // Initialize filters and data safely.
 $('repFrom').value='';$('repTo').value='';
 renderAll();
+if($('mutDate'))$('mutDate').value=today();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
