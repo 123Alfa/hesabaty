@@ -193,40 +193,48 @@ footer{padding-bottom:28px}
 
 
 <section id="mutual" class="page">
-  <div class="card">
-    <div class="section-title"><h2>👤 إعداد الحساب الشخصي</h2><span class="small">حساب واحد فقط بينك وبين شخص واحد</span></div>
-    <div class="grid">
-      <div><label for="mutPersonName">اسم الشخص</label><input id="mutPersonName" placeholder="اكتب اسم الشخص اللي بينك وبينه الحساب"></div>
-      <div><label for="mutOpeningAmount">مبلغ رصيد البداية (جنيه)</label><input id="mutOpeningAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
-      <div class="full"><label for="mutOpeningDirection">رصيد البداية لصالح مين؟</label><select id="mutOpeningDirection"><option value="youOwed">لي عنده — هو مديون لي</option><option value="themOwed">له عندي — أنا مديون له</option><option value="equal">مفيش مديونية — الحساب متساوي</option></select></div>
-    </div>
-    <div class="actions"><button class="btn primary" onclick="saveMutualSettings()">💾 حفظ اسم الشخص ورصيد البداية</button></div>
-    <div class="small">رصيد البداية هو المبلغ المستحق قبل أول حركة تسجلها هنا. لن يؤثر على الحسابات الرئيسية.</div>
+ <div class="cards">
+  <div class="card"><div class="label">🟢 إجمالي اللي حولته له</div><div id="mutSent" class="num green">0 ج</div></div>
+  <div class="card"><div class="label">🔵 إجمالي اللي استلمته منه</div><div id="mutReceived" class="num teal">0 ج</div></div>
+  <div class="card"><div class="label">💼 رصيد البداية</div><div id="mutOpeningView" class="num">0 ج</div></div>
+  <div class="card"><div class="label">⚖️ الرصيد النهائي</div><div id="mutNet" class="num">0 ج</div></div>
+ </div>
+
+ <div class="card form-card">
+  <div class="section-title"><h2>⚙️ بيانات الحساب الشخصي</h2><span class="small">حساب واحد مستقل لشخص واحد فقط</span></div>
+  <div class="grid">
+   <div class="full"><label for="mutAccountPerson">اسم الشخص اللي الحساب بينك وبينه *</label><input id="mutAccountPerson" placeholder="اكتب اسم الشخص مرة واحدة" autocomplete="off"></div>
+   <div><label for="mutOpeningAmount">مبلغ رصيد البداية بالجنيه</label><input id="mutOpeningAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
+   <div><label for="mutOpeningDirection">رصيد البداية لصالح مين؟</label><select id="mutOpeningDirection"><option value="owedToMe">لي عنده — هو مديون لي</option><option value="owedByMe">له عندي — أنا مديون له</option></select></div>
   </div>
-  <div class="cards form-card">
-    <div class="card"><div class="label">🟢 إجمالي اللي حولته له</div><div id="mutSent" class="num green">0 ج</div></div>
-    <div class="card"><div class="label">🔵 إجمالي اللي استلمته منه</div><div id="mutReceived" class="num teal">0 ج</div></div>
-    <div class="card"><div class="label">💼 رصيد البداية</div><div id="mutOpeningView" class="num">0 ج</div></div>
-    <div class="card"><div class="label">⚖️ الرصيد الحالي</div><div id="mutNet" class="num">متساوي</div></div>
+  <div class="small" style="margin-top:8px">رصيد البداية هو وضع الحساب قبل أول حركة هتسجلها. اكتب المبلغ واختار هل الفلوس لي عنده ولا له عندك. لو الحساب كان متصفّي، اكتب صفر.</div>
+  <div class="actions"><button class="btn primary" onclick="saveMutualSettings()">💾 حفظ بيانات الحساب ورصيد البداية</button></div>
+  <div id="mutLegacyNotice" class="small" style="margin-top:8px"></div>
+ </div>
+
+ <div class="card form-card">
+  <div class="section-title"><h2 id="mutFormTitle">➕ تسجيل حركة في الحساب</h2><span class="small">الحساب مع: <b id="mutCounterpartyLabel">لم يتم تحديد الاسم</b></span></div>
+  <div class="grid">
+   <div><label for="mutType">نوع الحركة *</label><select id="mutType"><option value="sent">أنا حولت له / دفعته له</option><option value="received">هو حول لي / دفعه لي</option></select></div>
+   <div><label for="mutAmount">المبلغ بالجنيه *</label><input id="mutAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0"></div>
+   <div><label for="mutDate">التاريخ *</label><input id="mutDate" type="date"></div>
+   <div><label for="mutMethod">طريقة الحركة</label><select id="mutMethod"><option>كاش</option><option>محفظة</option><option>إنستا باي</option><option>تحويل بنكي</option><option>أخرى</option></select></div>
+   <div><label for="mutRef">رقم العملية (اختياري)</label><input id="mutRef" placeholder="رقم مرجعي"></div>
+   <div class="full"><label for="mutNote">البيان / الملاحظات</label><textarea id="mutNote" rows="2" placeholder="سبب التحويل أو أي تفاصيل"></textarea></div>
   </div>
-  <div class="card form-card">
-    <div class="section-title"><h2 id="mutFormTitle">➕ تسجيل حركة في الحساب المتبادل</h2><span id="mutPersonLabel" class="small">حدد اسم الشخص أولًا</span></div>
-    <div class="grid">
-      <div><label for="mutType">نوع الحركة *</label><select id="mutType"><option value="sent">أنا حولت له / دفعته له</option><option value="received">هو حول لي / دفعه لي</option></select></div>
-      <div><label for="mutAmount">المبلغ بالجنيه *</label><input id="mutAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0"></div>
-      <div><label for="mutDate">التاريخ *</label><input id="mutDate" type="date"></div>
-      <div><label for="mutMethod">طريقة الحركة</label><select id="mutMethod"><option>كاش</option><option>محفظة</option><option>إنستا باي</option><option>تحويل بنكي</option><option>أخرى</option></select></div>
-      <div><label for="mutRef">رقم العملية (اختياري)</label><input id="mutRef" placeholder="رقم مرجعي"></div>
-      <div class="full"><label for="mutNote">البيان / الملاحظات</label><textarea id="mutNote" rows="2" placeholder="سبب التحويل أو أي تفاصيل"></textarea></div>
-    </div>
-    <div class="actions"><button id="mutSaveBtn" class="btn primary" onclick="saveMutualOp()">💾 حفظ الحركة</button><button class="btn" onclick="resetMutualForm()">تفريغ الحقول</button><button class="btn success" onclick="exportMutualData()">⬇️ تصدير الحساب الشخصي</button><button class="btn" onclick="document.getElementById('mutImportFile').click()">⬆️ استرجاع نسخة</button><input id="mutImportFile" type="file" accept=".json,application/json" hidden onchange="importMutualData(event)"></div>
-    <div class="small" style="margin-top:8px">الرصيد الموجب = لي عنده. الرصيد السالب = له عندي. كل الحركات هنا تخص الشخص الواحد المحدد بالأعلى.</div>
-  </div>
-  <div class="card form-card">
-    <div class="section-title"><h2>📋 كشف الحساب الشخصي</h2></div>
-    <div class="grid"><div><label for="mutFilterType">نوع الحركة</label><select id="mutFilterType" onchange="renderMutual()"><option value="">كل الحركات</option><option value="sent">أنا حولت له</option><option value="received">هو حول لي</option></select></div><div><label for="mutFilterFrom">من تاريخ</label><input id="mutFilterFrom" type="date" onchange="renderMutual()"></div><div><label for="mutFilterTo">إلى تاريخ</label><input id="mutFilterTo" type="date" onchange="renderMutual()"></div></div>
-    <div id="mutOpsTable"></div>
-  </div>
+  <div class="actions"><button id="mutSaveBtn" class="btn primary" onclick="saveMutualOp()">💾 حفظ الحركة</button><button class="btn" onclick="resetMutualForm()">تفريغ الحقول</button><button class="btn success" onclick="exportMutualData()">⬇️ تصدير الحساب الشخصي</button><button class="btn" onclick="document.getElementById('mutImportFile').click()">⬆️ استرجاع نسخة</button><input id="mutImportFile" type="file" accept=".json,application/json" hidden onchange="importMutualData(event)"></div>
+  <div class="small" style="margin-top:8px">الرصيد النهائي = رصيد البداية + اللي حولته له − اللي استلمته منه.</div>
+ </div>
+
+ <div class="card form-card">
+  <div class="section-title"><h2>📌 ملخص الحساب الشخصي</h2><span id="mutCount" class="small">0 حركة</span></div>
+  <div id="mutAccountSummary"></div>
+ </div>
+ <div class="card form-card">
+  <div class="section-title"><h2>📋 سجل الحركات الشخصية</h2></div>
+  <div class="grid"><div><label for="mutFilterType">تصفية حسب نوع الحركة</label><select id="mutFilterType" onchange="renderMutual()"><option value="">كل الحركات</option><option value="sent">أنا حولت له</option><option value="received">هو حول لي</option></select></div></div>
+  <div id="mutOpsTable"></div>
+ </div>
 </section>
 
 <section id="reports" class="page">
@@ -421,61 +429,28 @@ function renderBackupInfo(){
 }
 
 
-// الحساب المتبادل: شخص واحد فقط، وبيانات مستقلة عن العمليات الرئيسية.
+// الحساب المتبادل: حساب مستقل تمامًا، لشخص واحد فقط، مع رصيد افتتاحي.
 const MUTUAL_KEY='hesabaty_mutual_accounts_v1';
 let mutualData=loadMutualData();
 let mutualEditId=null;
-function emptyMutualData(){return {version:2,seq:0,personName:'',openingAmount:0,openingDirection:'youOwed',ops:[]}}
-function loadMutualData(){
- try{
-  const x=JSON.parse(localStorage.getItem(MUTUAL_KEY)||'null');
-  if(!x||!Array.isArray(x.ops))return emptyMutualData();
-  const d=emptyMutualData();d.seq=Number(x.seq)||0;d.personName=normText(x.personName||'');
-  d.openingAmount=parseAmount(x.openingAmount);
-  d.openingDirection=['youOwed','themOwed','equal'].includes(x.openingDirection)?x.openingDirection:'youOwed';
-  d.ops=x.ops.map((o,i)=>({id:normText(o.id)||'MUT-'+String(i+1).padStart(6,'0'),person:d.personName||normText(o.person),type:o.type==='received'?'received':'sent',amount:parseAmount(o.amount),date:/^\d{4}-\d{2}-\d{2}$/.test(o.date)?o.date:today(),method:normText(o.method)||'أخرى',ref:normText(o.ref),note:normText(o.note),createdAt:o.createdAt||nowISO(),updatedAt:o.updatedAt||o.createdAt||nowISO()})).filter(o=>o.amount>0);
-  return d;
- }catch(e){return emptyMutualData()}
-}
-function saveMutualData(){mutualData.ops.forEach(o=>o.person=mutualData.personName);localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual()}
-function nextMutualId(){const n=Math.max(mutualData.seq,...mutualData.ops.map(o=>Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0))+1;mutualData.seq=n;return 'MUT-'+String(n).padStart(6,'0')}
-function openingNet(){const a=mutualData.openingAmount;return mutualData.openingDirection==='youOwed'?a:mutualData.openingDirection==='themOwed'?-a:0}
-function saveMutualSettings(){
- const name=normText($('mutPersonName').value),amountRaw=$('mutOpeningAmount').value;
- const amount=amountRaw===''?0:Number(amountRaw);
- if(!name)return alert('اكتب اسم الشخص أولًا');
- if(!Number.isFinite(amount)||amount<0)return alert('اكتب مبلغ رصيد بداية صحيحًا');
- if(mutualData.personName&&mutualData.personName!==name&&!confirm('تغيير اسم الشخص سيجعل كل الحركات السابقة تظهر بالاسم الجديد. هل تريد المتابعة؟'))return;
- mutualData.personName=name;mutualData.openingAmount=round2(amount);mutualData.openingDirection=$('mutOpeningDirection').value;
- mutualData.ops.forEach(o=>o.person=name);localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual();toast('تم حفظ إعدادات الحساب ورصيد البداية ✅');
-}
-function resetMutualForm(){mutualEditId=null;if($('mutFormTitle'))$('mutFormTitle').textContent='➕ تسجيل حركة في الحساب المتبادل';if($('mutSaveBtn'))$('mutSaveBtn').textContent='💾 حفظ الحركة';$('mutType').value='sent';$('mutAmount').value='';$('mutDate').value=today();$('mutMethod').value='كاش';$('mutRef').value='';$('mutNote').value=''}
-function saveMutualOp(){
- const person=normText(mutualData.personName||$('mutPersonName').value),amount=parseAmount($('mutAmount').value),date=$('mutDate').value;
- if(!person){alert('احفظ اسم الشخص في إعدادات الحساب أولًا');$('mutPersonName').focus();return}
- if(!amount||!date)return alert('اكتب المبلغ والتاريخ بشكل صحيح');
- mutualData.personName=person;
- const obj={person,type:$('mutType').value==='received'?'received':'sent',amount,date,method:$('mutMethod').value,ref:normText($('mutRef').value),note:normText($('mutNote').value),updatedAt:nowISO()};
- if(mutualEditId){const i=mutualData.ops.findIndex(o=>o.id===mutualEditId);if(i<0){resetMutualForm();return}mutualData.ops[i]={...mutualData.ops[i],...obj}}
- else mutualData.ops.push({id:nextMutualId(),...obj,createdAt:nowISO()});
- localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));resetMutualForm();renderMutual();toast('تم حفظ الحركة الشخصية ✅')
-}
-function editMutualOp(id){const o=mutualData.ops.find(x=>x.id===id);if(!o)return;mutualEditId=id;$('mutFormTitle').textContent='✏️ تعديل حركة شخصية';$('mutSaveBtn').textContent='💾 حفظ التعديل';$('mutType').value=o.type;$('mutAmount').value=o.amount;$('mutDate').value=o.date;$('mutMethod').value=o.method;$('mutRef').value=o.ref;$('mutNote').value=o.note;document.getElementById('mutual').scrollIntoView({behavior:'smooth',block:'start'})}
-function deleteMutualOp(id){if(!confirm('حذف هذه الحركة من الحساب الشخصي؟'))return;mutualData.ops=mutualData.ops.filter(o=>o.id!==id);localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual();toast('تم حذف الحركة الشخصية')}
-function renderMutual(){
- if(!$('mutOpsTable'))return;
- $('mutPersonName').value=mutualData.personName;$('mutOpeningAmount').value=String(mutualData.openingAmount||0);$('mutOpeningDirection').value=mutualData.openingDirection;
- $('mutPersonLabel').textContent=mutualData.personName?('الحساب مع: '+mutualData.personName):'حدد اسم الشخص أولًا';
- const ops=mutualData.ops,sent=round2(ops.filter(o=>o.type==='sent').reduce((s,o)=>s+o.amount,0)),received=round2(ops.filter(o=>o.type==='received').reduce((s,o)=>s+o.amount,0));
- $('mutSent').textContent=money(sent);$('mutReceived').textContent=money(received);$('mutOpeningView').textContent=money(mutualData.openingAmount);
- const net=round2(openingNet()+sent-received);
- $('mutNet').textContent=net===0?'الحساب متساوي':money(Math.abs(net))+(net>0?' لي عنده': ' له عندي');$('mutNet').className='num '+(net>=0?'green':'red');
- const fType=$('mutFilterType').value,f=$('mutFilterFrom').value,t=$('mutFilterTo').value;
- const list=[...ops].filter(o=>(!fType||o.type===fType)&&(!f||o.date>=f)&&(!t||o.date<=t)).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));
- $('mutOpsTable').innerHTML=list.length?'<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الشخص</th><th>الحركة</th><th>المبلغ</th><th>الطريقة</th><th>البيان</th><th>إجراءات</th></tr></thead><tbody>'+list.map(o=>`<tr><td>${esc(formatDate(o.date))}</td><td><b>${esc(mutualData.personName||o.person)}</b></td><td><span class="pill ${o.type==='sent'?'in':'out'}">${o.type==='sent'?'أنا حولت له':'هو حول لي'}</span></td><td><b>${money(o.amount)}</b></td><td>${esc(o.method)}</td><td class="note-cell">${esc(o.note||'—')}${o.ref?'<br><span class="small">رقم: '+esc(o.ref)+'</span>':''}</td><td class="actions-cell"><button class="btn" onclick="editMutualOp('${esc(o.id)}')">✏️</button> <button class="btn danger" onclick="deleteMutualOp('${esc(o.id)}')">🗑️</button></td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">لا توجد حركات مطابقة.</div>';
-}
-function exportMutualData(){const payload={...mutualData,exportedAt:nowISO(),type:'hesabaty-mutual-independent'};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='حساباتي-الحساب-المتبادل-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('تم تصدير الحساب المتبادل ✅')}
-function importMutualData(e){const file=e.target.files&&e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||!Array.isArray(x.ops))throw new Error('invalid');const imported=emptyMutualData();imported.seq=Number(x.seq)||0;imported.personName=normText(x.personName||x.ops[0]?.person||'');imported.openingAmount=parseAmount(x.openingAmount);imported.openingDirection=['youOwed','themOwed','equal'].includes(x.openingDirection)?x.openingDirection:'youOwed';imported.ops=x.ops.map((o,i)=>({id:normText(o.id)||'MUT-'+String(i+1).padStart(6,'0'),person:imported.personName||normText(o.person),type:o.type==='received'?'received':'sent',amount:parseAmount(o.amount),date:/^\d{4}-\d{2}-\d{2}$/.test(o.date)?o.date:today(),method:normText(o.method)||'أخرى',ref:normText(o.ref),note:normText(o.note),createdAt:o.createdAt||nowISO(),updatedAt:o.updatedAt||o.createdAt||nowISO()})).filter(o=>o.amount>0);if(!imported.personName){alert('النسخة لا تحتوي على اسم شخص. اكتب الاسم بعد الاسترجاع.')}if(!confirm('استرجاع النسخة سيستبدل بيانات الحساب المتبادل الحالية فقط. هل أنت متأكد؟'))return;mutualData=imported;localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual();resetMutualForm();toast('تم استرجاع الحساب الشخصي بنجاح ✅')}catch(err){alert('ملف النسخة غير صالح أو لا يحتوي على حركات حساب متبادل')}};r.readAsText(file);e.target.value=''}
+function emptyMutualData(){return {version:2,seq:0,person:'',openingBalance:0,ops:[]}}
+function normalizeMutualOp(o,i){return {id:normText(o?.id)||'MUT-'+String(i+1).padStart(6,'0'),person:normText(o?.person),type:o?.type==='received'?'received':'sent',amount:parseAmount(o?.amount),date:/^\d{4}-\d{2}-\d{2}$/.test(o?.date)?o.date:today(),method:normText(o?.method)||'أخرى',ref:normText(o?.ref),note:normText(o?.note),createdAt:o?.createdAt||nowISO(),updatedAt:o?.updatedAt||o?.createdAt||nowISO()}}
+function loadMutualData(){try{const x=JSON.parse(localStorage.getItem(MUTUAL_KEY)||'null');if(!x||!Array.isArray(x.ops))return emptyMutualData();const d=emptyMutualData();d.seq=Number(x.seq)||0;d.ops=x.ops.map(normalizeMutualOp).filter(o=>o.person&&o.amount>0);d.person=normText(x.person)||(d.ops[0]?.person||'');const ob=Number(x.openingBalance);d.openingBalance=Number.isFinite(ob)?round2(ob):0;return d}catch(e){return emptyMutualData()}}
+function saveMutualData(){localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual()}
+function nextMutualId(){const n=Math.max(Number(mutualData.seq)||0,...mutualData.ops.map(o=>Number((o.id.match(/(\d+)$/)||['0','0'])[1])||0))+1;mutualData.seq=n;return 'MUT-'+String(n).padStart(6,'0')}
+function accountOps(){return mutualData.person?mutualData.ops.filter(o=>o.person===mutualData.person):[]}
+function formatAccountBalance(n){n=round2(n);if(n===0)return 'الحساب متصفّي';return money(Math.abs(n))+(n>0?' — لي عنده':' — له عندي')}
+function setOpeningFields(){const v=round2(mutualData.openingBalance);$('mutOpeningAmount').value=String(Math.abs(v));$('mutOpeningDirection').value=v<0?'owedByMe':'owedToMe'}
+function saveMutualSettings(){const person=normText($('mutAccountPerson').value);const amountRaw=$('mutOpeningAmount').value.trim();const amount=amountRaw===''?0:Number(amountRaw);if(!person)return alert('اكتب اسم الشخص اللي الحساب بينك وبينه');if(!Number.isFinite(amount)||amount<0)return alert('اكتب مبلغ رصيد بداية صحيح لا يقل عن صفر');const old=mutualData.person;if(old!==person){const collision=mutualData.ops.some(o=>o.person===person&&o.person!==old);if(collision&&!confirm('يوجد سجل قديم بالاسم الجديد. تغيير الاسم قد يجمع هذه الحركات في حساب واحد. هل تريد المتابعة؟'))return;if(old)mutualData.ops=mutualData.ops.map(o=>o.person===old?{...o,person}:o)}mutualData.person=person;mutualData.openingBalance=round2(amount)*($('mutOpeningDirection').value==='owedByMe'?-1:1);mutualData.version=2;localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual();toast('تم حفظ بيانات الحساب ورصيد البداية ✅')}
+function resetMutualForm(){mutualEditId=null;$('mutFormTitle').textContent='➕ تسجيل حركة في الحساب';$('mutSaveBtn').textContent='💾 حفظ الحركة';$('mutType').value='sent';$('mutAmount').value='';$('mutDate').value=today();$('mutMethod').value='كاش';$('mutRef').value='';$('mutNote').value=''}
+function saveMutualOp(){const person=normText(mutualData.person),amount=parseAmount($('mutAmount').value),date=$('mutDate').value;if(!person)return alert('احفظ اسم الشخص في بيانات الحساب أولًا');if(!amount||!date)return alert('اكتب المبلغ والتاريخ بشكل صحيح');const obj={person,type:$('mutType').value==='received'?'received':'sent',amount,date,method:$('mutMethod').value,ref:normText($('mutRef').value),note:normText($('mutNote').value),updatedAt:nowISO()};if(mutualEditId){const i=mutualData.ops.findIndex(o=>o.id===mutualEditId);if(i<0){resetMutualForm();return}mutualData.ops[i]={...mutualData.ops[i],...obj}}else mutualData.ops.push({id:nextMutualId(),...obj,createdAt:nowISO()});saveMutualData();resetMutualForm();toast('تم حفظ الحركة الشخصية ✅')}
+function editMutualOp(id){const o=mutualData.ops.find(x=>x.id===id&&x.person===mutualData.person);if(!o)return;mutualEditId=id;$('mutFormTitle').textContent='✏️ تعديل حركة شخصية';$('mutSaveBtn').textContent='💾 حفظ التعديل';$('mutType').value=o.type;$('mutAmount').value=o.amount;$('mutDate').value=o.date;$('mutMethod').value=o.method;$('mutRef').value=o.ref;$('mutNote').value=o.note;document.getElementById('mutual').scrollIntoView({behavior:'smooth',block:'start'})}
+function deleteMutualOp(id){const o=mutualData.ops.find(x=>x.id===id&&x.person===mutualData.person);if(!o)return;if(!confirm('حذف هذه الحركة من الحساب الشخصي؟'))return;mutualData.ops=mutualData.ops.filter(x=>x.id!==id);saveMutualData();toast('تم حذف الحركة الشخصية')}
+function mutualNet(ops){return round2(mutualData.openingBalance+ops.filter(o=>o.type==='sent').reduce((s,o)=>s+o.amount,0)-ops.filter(o=>o.type==='received').reduce((s,o)=>s+o.amount,0))}
+function renderMutual(){if(!$('mutOpsTable'))return;const allOps=mutualData.ops;const person=mutualData.person;const ops=accountOps();const sent=round2(ops.filter(o=>o.type==='sent').reduce((s,o)=>s+o.amount,0)),received=round2(ops.filter(o=>o.type==='received').reduce((s,o)=>s+o.amount,0));const net=mutualNet(ops);$('mutSent').textContent=money(sent);$('mutReceived').textContent=money(received);$('mutOpeningView').textContent=formatAccountBalance(mutualData.openingBalance);$('mutNet').textContent=formatAccountBalance(net);$('mutNet').className='num '+(net>0?'green':net<0?'red':'teal');$('mutAccountPerson').value=person;$('mutCounterpartyLabel').textContent=person||'لم يتم تحديد الاسم';setOpeningFields();$('mutCount').textContent=ops.length+' حركة';$('mutAccountSummary').innerHTML=person?`<div class="summary-line"><span>اسم الحساب</span><b>${esc(person)}</b></div><div class="summary-line"><span>رصيد البداية</span><b>${esc(formatAccountBalance(mutualData.openingBalance))}</b></div><div class="summary-line"><span>إجمالي اللي حولته له</span><b class="green">${money(sent)}</b></div><div class="summary-line"><span>إجمالي اللي استلمته منه</span><b class="teal">${money(received)}</b></div><div class="summary-line"><b>الرصيد النهائي</b><b class="${net>0?'green':net<0?'red':'teal'}">${esc(formatAccountBalance(net))}</b></div>`:'<div class="empty">اكتب اسم الشخص واحفظ بيانات الحساب لبدء التسجيل.</div>';const otherNames=[...new Set(allOps.map(o=>o.person).filter(n=>n&&n!==person))];$('mutLegacyNotice').textContent=otherNames.length?`تنبيه: توجد ${otherNames.length} أسماء أخرى في سجل قديم. حركاتهم محفوظة في بيانات البرنامج لكنها لا تدخل في رصيد هذا الحساب؛ صدّر نسخة احتياطية للاحتفاظ بها.`:'';const fType=$('mutFilterType').value;const list=[...ops].filter(o=>!fType||o.type===fType).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));$('mutOpsTable').innerHTML=list.length?'<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الحركة</th><th>المبلغ</th><th>الطريقة</th><th>البيان</th><th>إجراءات</th></tr></thead><tbody>'+list.map(o=>`<tr><td>${esc(formatDate(o.date))}</td><td><span class="pill ${o.type==='sent'?'in':'out'}">${o.type==='sent'?'أنا حولت له':'هو حول لي'}</span></td><td><b>${money(o.amount)}</b></td><td>${esc(o.method)}</td><td class="note-cell">${esc(o.note||'—')}${o.ref?'<br><span class="small">رقم: '+esc(o.ref)+'</span>':''}</td><td class="actions-cell"><button class="btn" onclick="editMutualOp('${esc(o.id)}')">✏️</button> <button class="btn danger" onclick="deleteMutualOp('${esc(o.id)}')">🗑️</button></td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">لا توجد حركات مسجلة في هذا الحساب حتى الآن.</div>'}
+function exportMutualData(){const payload={...mutualData,exportedAt:nowISO(),type:'hesabaty-mutual-single-account'};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='حساباتي-الحساب-الشخصي-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('تم تصدير الحساب الشخصي ✅')}
+function importMutualData(e){const file=e.target.files&&e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||!Array.isArray(x.ops))throw new Error('invalid');const imported=emptyMutualData();imported.seq=Number(x.seq)||0;imported.ops=x.ops.map(normalizeMutualOp).filter(o=>o.person&&o.amount>0);imported.person=normText(x.person)||(imported.ops[0]?.person||'');const ob=Number(x.openingBalance);imported.openingBalance=Number.isFinite(ob)?round2(ob):0;if(!confirm('استرجاع النسخة سيستبدل بيانات الحساب الشخصي ورصيد بدايته فقط، ولن يغيّر العمليات الرئيسية. هل أنت متأكد؟'))return;mutualData=imported;localStorage.setItem(MUTUAL_KEY,JSON.stringify(mutualData));renderMutual();resetMutualForm();toast('تم استرجاع الحساب الشخصي بنجاح ✅')}catch(err){alert('ملف النسخة غير صالح أو لا يحتوي على بيانات حساب شخصي')}};r.readAsText(file);e.target.value=''}
+
 // Events
 $('opsTable').addEventListener('click',e=>{
  const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
@@ -490,6 +465,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 $('repFrom').value='';$('repTo').value='';
 renderAll();
 if($('mutDate'))$('mutDate').value=today();
+if($('mutAccountPerson'))renderMutual();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
